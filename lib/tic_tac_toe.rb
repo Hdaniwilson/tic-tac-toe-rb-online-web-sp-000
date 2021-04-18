@@ -21,8 +21,8 @@ def input_to_index(user_input)
   user_input.to_i - 1
 end
 
-def move(board, index, current_player)
-  board[index] = current_player
+def move(array, index, player)
+  array[index] = player
 end
 
 def position_taken?(board, location)
@@ -31,6 +31,7 @@ end
 
 def valid_move?(board, index)
   index.between?(0,8) && !position_taken?(board, index)
+  return true
 end
 
 def turn(board)
@@ -65,11 +66,15 @@ end
 
 def won?(board)
   WIN_COMBINATIONS.find do |combo|
-    board[combo[0]] == board[combo[1]] &&
-    board[combo[1]] == board[combo[2]] &&
-    position_taken?(board, combo[0])
+    if board[combo[0]] == "X" && board[combo[1]] == "X" && board[combo[2]] == "X"
+        return win_combination
+      elsif board[combo[0]] == "O" && board[combo[1]] == "O" && board[combo[2]] == "O"
+        return win_combination
+      else
+        false
+      end
+    end
   end
-end
 
 def full?(board)
   board.all?{|i| i == "X" || i =="O"}
@@ -78,6 +83,8 @@ end
 def draw?(board)
   if (!won?(board) && full?(board))
     true
+  else won?(board)
+    return false
   end
 end
 
@@ -95,15 +102,15 @@ end
 
 
 def play(board)
-  turn(board)
   until over?(board)
+    turn(board)
+  end
   if won?(board)
     winner(board)== "X" || winner(board) == "O"
     puts "Congratulations #{winner(board)}!"
   else draw?(board)
     puts "Cat's Game!"
   end
-end
 end
 
 def turn(board)
